@@ -1,0 +1,72 @@
+Create table client_master_b2_215b( 
+             Client_no  varchar2(6),
+             name varchar2(20) NOT NULL,
+             address1 varchar2(30),
+             address2 varchar2(30),
+             city varchar2(15),
+             pincode  number(8),
+             state varchar2(15),
+             bal_due number(10,2) ,
+             PRIMARY KEY(Client_no),
+             check (Client_no LIKE 'C%'));
+Create table product_master_b2_215b
+( 	product_no varchar2(6),
+ 	description varchar2(20) NOT NULL,
+	 profit_percent number(4,2) NOT NULL,
+	unit_measure varchar2(10) NOT NULL,
+	qty_on_hand number(8) NOT NULL,
+	reorder_lvl number(8) NOT NULL,
+	sell_price number (8,2) NOT NULL,
+	cost_price number (8,2) NOT NULL,
+         PRIMARY KEY(product_no),
+         check (product_no LIKE 'P%'),
+          check (sell_price  !=0),
+           check (cost_price  !=0));
+create table salesman_master_b2_215b
+(salesman_no varchar2(6),
+salesman_name varchar2(20) NOT NULL,
+address1 varchar2(30) NOT NULL,
+address2 varchar2(30) ,
+city varchar2(20),
+pincode varchar2(8),
+state varchar2(20),
+sal_amt number(8,2) NOT NULL ,
+tgt_to_get number(6,2) NOT NULL,
+ytd_sales number(6,2) NOT NULL,
+remarks varchar2(60) ,
+PRIMARY KEY (salesman_no),
+check (sal_amt !=0),
+check (tgt_to_get !=0));
+
+create table sales_order_b2_215b
+(order_no varchar2(10),
+order_date date,
+client_no varchar2(6),
+dely_Addr varchar(25),
+salesman_no varchar2(6),
+dely_type char(1) Default 'F',
+billed_yn char(1),
+dely_date date,
+order_status varchar2(10) ,
+PRIMARY KEY(order_no),
+check(order_no LIKE'O%'),
+FOREIGN KEY (client_no)  REFERENCES client_master_b2_215b(client_no),
+FOREIGN KEY (salesman_no)  REFERENCES salesman_master_b2_215b(salesman_no),
+check(dely_type IN ('P','F')),
+check(dely_date >=order_date),
+check(order_status IN ('In Process','Fulfilled','BackOrder','Cancelled')));
+
+
+create table sales_order_details_b2_215c
+(order_no varchar2(6),
+product_no varchar2(6),
+qty_ordered number(8),
+qty_disp number(8),
+product_rate number(10,2),
+PRIMARY KEY (order_no,product_no),
+Foreign key (order_no) References sales_order_b2_215c (order_no),
+
+Foreign key (product_no) References product_master_b2_215c (product_no));
+
+
+
